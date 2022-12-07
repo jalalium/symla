@@ -3,6 +3,7 @@ from sympy                    import Symbol
 from symla.kronecker import FiniteVectorSpace
 from symla.kronecker import Matrix
 from symla.kronecker import Kron
+from symla.inverse   import Inverse
 
 # ====================================================================
 def test_kronecker_1():

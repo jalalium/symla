@@ -111,8 +111,8 @@ class Kron(BasicOperator):
 
     def __new__(cls, *args, **options):
         # (Try to) sympify args first
-
         if options.pop('evaluate', True):
+            args = [arg.expand() for arg in args]
             r = cls.eval(*args)
         else:
             r = None
@@ -169,12 +169,13 @@ class Kron(BasicOperator):
         # ...
 
         # ... treate the case where there is and Mul node
-        mul_args = [arg for arg in args if isinstance(arg, Mul)]
+        mul_args = [arg for arg in args if isinstance(arg, Mul) and 
+                    not all([isinstance(i, LinearOperator) for i in arg.args])]
         if mul_args:
             arg = mul_args[0]
             index = originals.index(arg)
 
-            linops = [i for i in arg.args if isinstance(i, LinearOperator)]
+            linops = [i for i in arg.args if isinstance(i, (LinearOperator, Kron))]
             coeffs = [i for i in arg.args if i not in linops]
 
             linop = reduce(mul, linops)
